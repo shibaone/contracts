@@ -94,7 +94,6 @@ async function deploy() {
     )
   )
 
-
   await deployer.deploy(
     tx('Governance', 'update',
       [
@@ -105,7 +104,7 @@ async function deploy() {
               ethUtils.bufferToHex(ethUtils.keccak256('stateSender')),
               getAddressForContract('StateSender')
             ).encodeABI()
-        },
+        }
       ],
       'GovernanceProxy'
     )
@@ -121,7 +120,7 @@ async function deploy() {
               ethUtils.bufferToHex(ethUtils.keccak256('wethToken')),
               getAddressForContract('MaticWETH')
             ).encodeABI()
-        },
+        }
       ],
       'GovernanceProxy'
     )
@@ -152,7 +151,7 @@ async function deploy() {
             registry.contract.methods.addErc20Predicate(
               getAddressForContract('ERC20PredicateBurnOnly')
             ).encodeABI()
-        },
+        }
       ],
       'GovernanceProxy'
     )
@@ -167,7 +166,7 @@ async function deploy() {
             registry.contract.methods.addErc721Predicate(
               getAddressForContract('ERC721PredicateBurnOnly')
             ).encodeABI()
-        },
+        }
       ],
       'GovernanceProxy'
     )
@@ -205,6 +204,7 @@ async function deploy() {
 
 
   await deployer.deploy(tx('StakingNFT', 'transferOwnership', ['StakeManagerProxy']))
+
   await deployer.deploy(tx('StakeManager', 'initialize', [
     'Registry',
     'RootChainProxy',
@@ -217,7 +217,13 @@ async function deploy() {
     'StakeManagerExtension'
   ],
   'StakeManagerProxy'
-))
+  ))
+
+  await deployer.deploy(tx('EventsHub', 'initialize', [
+    'Registry'
+  ],
+  'EventsHubProxy'
+  ))
 }
 
 function tx(contract, method, args, addressArtifact) {
@@ -254,7 +260,7 @@ function getAddressForContract(contract) {
 
 function wait(ms) {
   return new Promise((resolve, reject) => {
-    setTimeout(function() { resolve() }, ms);
+    setTimeout(function() { resolve() }, ms)
   })
 }
 
