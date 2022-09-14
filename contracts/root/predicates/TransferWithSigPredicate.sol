@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import {Math} from "openzeppelin-solidity/contracts/math/Math.sol";
 import {RLPReader} from "solidity-rlp/contracts/RLPReader.sol";

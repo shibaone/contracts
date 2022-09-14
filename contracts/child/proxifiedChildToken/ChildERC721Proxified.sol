@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import {Initializable} from "../../common/mixin/Initializable.sol";
 import "../ChildERC721.sol";

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import {Registry} from "../../common/Registry.sol";
 import {Proxy} from "../../common/misc/Proxy.sol";

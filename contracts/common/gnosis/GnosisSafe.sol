@@ -2,7 +2,7 @@
  *Submitted for verification at Etherscan.io on 2019-12-26
 */
 
-pragma solidity >=0.5.0 <0.7.0;
+pragma solidity ^0.8.7;
 
 /// @title SelfAuthorized - authorizes current contract to perform actions
 /// @author Richard Meissner - <richard@gnosis.pm>

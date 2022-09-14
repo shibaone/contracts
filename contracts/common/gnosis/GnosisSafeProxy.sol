@@ -2,7 +2,7 @@
  *Submitted for verification at Etherscan.io on 2020-01-13
 */
 
-pragma solidity ^0.5.3;
+pragma solidity ^0.8.7;
 
 /// @title Proxy - Generic proxy contract allows to execute all transactions applying the code of a master contract.
 /// @author Stefan George - <stefan@gnosis.io>

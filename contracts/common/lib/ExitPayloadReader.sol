@@ -1,4 +1,4 @@
-pragma solidity 0.5.17;
+pragma solidity ^0.8.7;
 
 import {RLPReader} from "solidity-rlp/contracts/RLPReader.sol";
 import {BytesLib} from "./BytesLib.sol";

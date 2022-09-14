@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 contract DelegateProxyForwarder {
     function delegatedFwd(address _dst, bytes memory _calldata) internal {

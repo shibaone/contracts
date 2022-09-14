@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 contract IWithdrawManager {
     function createExitQueue(address token) external;

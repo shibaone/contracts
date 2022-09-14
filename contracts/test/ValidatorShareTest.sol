@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 import {ValidatorShare} from "../staking/validatorShare/ValidatorShare.sol";
 
 contract ValidatorShareTest is ValidatorShare {

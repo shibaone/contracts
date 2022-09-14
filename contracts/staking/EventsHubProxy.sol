@@ -1,4 +1,4 @@
-pragma solidity 0.5.17;
+pragma solidity ^0.8.7;
 
 import {UpgradableProxy} from "../common/misc/UpgradableProxy.sol";
 

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import { DepositManagerStorage } from "../../root/depositManager/DepositManagerStorage.sol";
 import { GovernanceLockable } from "../mixin/GovernanceLockable.sol";

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import {BytesLib} from "../../common/lib/BytesLib.sol";
 import {Common} from "../../common/lib/Common.sol";

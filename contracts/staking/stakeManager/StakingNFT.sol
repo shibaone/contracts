@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721Full.sol";
 import {Ownable} from "openzeppelin-solidity/contracts/ownership/Ownable.sol";

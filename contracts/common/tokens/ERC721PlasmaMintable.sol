@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import {ERC721Mintable} from "openzeppelin-solidity/contracts/token/ERC721/ERC721Mintable.sol";
 import {ERC721MetadataMintable} from "openzeppelin-solidity/contracts/token/ERC721/ERC721MetadataMintable.sol";

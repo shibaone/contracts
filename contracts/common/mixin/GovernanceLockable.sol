@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.8.7;
 
 import {Governable} from "../governance/Governable.sol";
 import {Lockable} from "./Lockable.sol";
