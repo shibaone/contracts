@@ -14,7 +14,7 @@ async function deploy() {
   }
 
   const qClient = await EthDeployer.getQueue()
-  const deployer = new EthDeployer.Sender(qClient)
+  const deployer = await new EthDeployer.Sender(qClient)
 
   // just need this for encodeABI()
   const registry = await Registry.new('0x0000000000000000000000000000000000000000')

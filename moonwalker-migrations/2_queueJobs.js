@@ -14,7 +14,7 @@ async function deploy() {
 
   // just need this for encodeABI()
   const registry = await Registry.new('0x0000000000000000000000000000000000000000')
-
+try {
   await deployer.deploy(
     tx('Governance', 'update',
       [
@@ -46,7 +46,7 @@ async function deploy() {
       'GovernanceProxy'
     )
   )
-
+try{
   await deployer.deploy(
     tx('Governance', 'update',
       [
@@ -78,6 +78,9 @@ async function deploy() {
       'GovernanceProxy'
     )
   )
+}catch(error){
+console.log(error);
+}
   await deployer.deploy(
     tx('Governance', 'update',
       [
@@ -201,7 +204,10 @@ async function deploy() {
       'GovernanceProxy'
     )
   )
-
+}
+catch(error){
+console.log(error);
+}
 
   await deployer.deploy(tx('StakingNFT', 'transferOwnership', ['StakeManagerProxy']))
 
