@@ -72,14 +72,12 @@ async function deploy() {
   await deployer.deploy(transformArtifact('ERC20PredicateBurnOnly', ['WithdrawManagerProxy', 'DepositManagerProxy']))
   await deployer.deploy(transformArtifact('ERC721PredicateBurnOnly', ['WithdrawManagerProxy', 'DepositManagerProxy']))
   await deployer.deploy(transformArtifact('MintableERC721Predicate', ['WithdrawManagerProxy', 'DepositManagerProxy']))
-try{
+
   await deployer.deploy(transformArtifact('Marketplace'))
   await deployer.deploy(transformArtifact('MarketplacePredicate', ['RootChain', 'WithdrawManagerProxy', 'Registry']))
 
   await deployer.deploy(transformArtifact('TransferWithSigPredicate', ['RootChain', 'WithdrawManagerProxy', 'Registry']))
-}
-catch(error){
-console.log(error)
+
   // contracts, id = 41
 }
 

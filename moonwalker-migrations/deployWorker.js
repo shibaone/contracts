@@ -12,8 +12,8 @@ const url = `https://${ETH_NETWORK}.infura.io/v3/${API_KEY}`
 const wallet = new HDWalletProvider(MNEMONIC, url)
 
 async function consume() {
-try {  const q = await EthDeployer.getQueue()
-  const worker = await new EthDeployer.Worker(
+  const q = await EthDeployer.getQueue()
+  const worker = new EthDeployer.Worker(
     wallet, q, {
       from: process.env.FROM || '0x9fB29AAc15b9A4B7F17c3385939b007540f4d791',
       gas: 10000000,
@@ -24,12 +24,6 @@ try {  const q = await EthDeployer.getQueue()
   )
   await worker.start('default-deposit-q')
   return 'worker started...'
-}catch(error){
-console.log(error);
-}
 }
 
 consume().then(console.log)
-process.on('unhandledRejection',function(err){
-console.log(err);
-});
