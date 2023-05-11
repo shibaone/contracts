@@ -62,6 +62,18 @@ module.exports = {
       gasPrice: 10000000000, // 10 gwei
       skipDryRun: true
     },
+    sepolia: {
+      provider: function() {
+        return new HDWalletProvider(
+          MNEMONIC,
+          `https://sepolia.infura.io/v3/${API_KEY}`
+        )
+      },
+      network_id: 11155111,
+      gas: 8000000,
+      gasPrice: 10000000000, // 10 gwei
+      skipDryRun: true
+    },
     mainnet: {
       provider: function() {
         return new HDWalletProvider(
