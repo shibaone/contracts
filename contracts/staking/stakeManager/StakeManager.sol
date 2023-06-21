@@ -22,6 +22,7 @@ import {StakeManagerStorageExtension} from "./StakeManagerStorageExtension.sol";
 import {IGovernance} from "../../common/governance/IGovernance.sol";
 import {Initializable} from "../../common/mixin/Initializable.sol";
 import {StakeManagerExtension} from "./StakeManagerExtension.sol";
+import {ValidatorPermission} from "../ValidatorPermission.sol";
 
 contract StakeManager is
     StakeManagerStorage,
@@ -34,6 +35,8 @@ contract StakeManager is
     using Merkle for bytes32;
     using RLPReader for bytes;
     using RLPReader for RLPReader.RLPItem;
+  
+    ValidatorPermission public validatorPermission;
 
     struct UnsignedValidatorsContext {
         uint256 unsignedValidatorIndex;
@@ -63,6 +66,13 @@ contract StakeManager is
         _;
     }
 
+    modifier onlyValidator(address _user) {
+        if(validatorPermission.validationEnabled()){
+            require(validatorPermission.validators(_user), "User is not whitelisted");
+        }
+        _;
+    }
+
     function _assertDelegation(uint256 validatorId) private view {
         require(validators[validatorId].contractAddress == msg.sender, "Invalid contract address");
     }
@@ -78,7 +88,8 @@ contract StakeManager is
         address _validatorShareFactory,
         address _governance,
         address _owner,
-        address _extensionCode
+        address _extensionCode,
+        address _validatorPermission
     ) external initializer {
         require(isContract(_extensionCode), "auction impl incorrect");
         extensionCode = _extensionCode;
@@ -90,6 +101,7 @@ contract StakeManager is
         logger = StakingInfo(_stakingLogger);
         validatorShareFactory = ValidatorShareFactory(_validatorShareFactory);
         _transferOwnership(_owner);
+        validatorPermission = ValidatorPermission(_validatorPermission);
 
         WITHDRAWAL_DELAY = (2); // unit: epoch
         currentEpoch = 1;
@@ -206,6 +218,11 @@ contract StakeManager is
     function setStakingToken(address _token) public onlyGovernance {
         require(_token != address(0x0));
         token = IERC20(_token);
+    }
+
+    function updateValidatorWhitelisting(address _newContract) public onlyOwner {
+        require(_newContract != address(0), "address cannot be zero");
+        validatorPermission = ValidatorPermission(_newContract);
     }
 
     /**
@@ -449,7 +466,7 @@ contract StakeManager is
         uint256 heimdallFee,
         bool acceptDelegation,
         bytes memory signerPubkey
-    ) public onlyWhenUnlocked {
+    ) public onlyWhenUnlocked onlyValidator(user){
         require(currentValidatorSetSize() < validatorThreshold, "no more slots");
         require(amount >= minDeposit, "not enough deposit");
         _transferAndTopUp(user, msg.sender, heimdallFee, amount);
