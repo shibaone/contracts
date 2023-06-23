@@ -43,7 +43,7 @@ async function deploy() {
   await deployer.deploy(transformArtifact('StakeManagerProxy', ['StakeManager']))
   await deployer.deploy(transformArtifact('SlashingManager', ['Registry', 'StakingInfo', { value: process.env.HEIMDALL_ID }]))
   await deployer.deploy(transformArtifact('ValidatorShare', ['Registry', { value: '0' }, 'StakingNFT', 'StakeManagerProxy']))
-
+  await deployer.deploy(transformArtifact('ValidatorPermission'))
   // Add test MaticToken migration obj (old id=17) with id=21 manually in build/status.json file
 }
 

@@ -39,6 +39,7 @@ const MintableERC721Predicate = artifacts.require('MintableERC721Predicate')
 const MarketplacePredicate = artifacts.require('MarketplacePredicate')
 const TransferWithSigPredicate = artifacts.require('TransferWithSigPredicate')
 const ExitNFT = artifacts.require('ExitNFT')
+const ValidatorPermission = artifacts.require('ValidatorPermission')
 
 // tokens
 const MaticWeth = artifacts.require('MaticWETH')
@@ -150,6 +151,8 @@ module.exports = async function(deployer) {
     await deployer.deploy(StakingInfo, Registry.address)
     await deployer.deploy(StakingNFT, 'Matic Validator', 'MV')
 
+    await deployer.deploy(ValidatorPermission)
+
     console.log('deploying tokens...')
     await deployer.deploy(MaticWeth)
     await deployer.deploy(BoneToken, 'BONE', 'BONE')
@@ -158,7 +161,7 @@ module.exports = async function(deployer) {
 
     const stakeManager = await deployer.deploy(StakeManager)
     const proxy = await deployer.deploy(StakeManagerProxy, '0x0000000000000000000000000000000000000000')
-    await proxy.updateAndCall(StakeManager.address, stakeManager.contract.methods.initialize(Registry.address, RootChainProxy.address, TestToken.address, StakingNFT.address, StakingInfo.address, ValidatorShareFactory.address, GovernanceProxy.address).encodeABI())
+    await proxy.updateAndCall(StakeManager.address, stakeManager.contract.methods.initialize(Registry.address, RootChainProxy.address, TestToken.address, StakingNFT.address, StakingInfo.address, ValidatorShareFactory.address, GovernanceProxy.address, ValidatorPermission.address).encodeABI())
 
     await deployer.deploy(SlashingManager, Registry.address, StakingInfo.address, process.env.HEIMDALL_ID)
     await deployer.deploy(ValidatorShare, Registry.address, 0/** dummy id */, StakingInfo.address, StakeManagerProxy.address)
@@ -225,6 +228,7 @@ module.exports = async function(deployer) {
         ValidatorShare: ValidatorShare.address,
         SlashingManager: SlashingManager.address,
         StakingInfo: StakingInfo.address,
+        ValidatorPermission: ValidatorPermission.address,
         ExitNFT: ExitNFT.address,
         StateSender: StateSender.address,
         predicates: {

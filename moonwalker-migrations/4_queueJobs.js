@@ -77,7 +77,7 @@ async function deploy() {
       'StakingInfo',
       'ValidatorShareFactory',
       'GovernanceProxy',
-      { value: process.env.FROM } // owner
+      { value: process.env.FROM } //owner
     ],
     'StakeManagerProxy'
   ))
