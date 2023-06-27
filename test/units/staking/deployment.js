@@ -44,6 +44,7 @@ export async function freshDeploy() {
   this.governance = contracts.governance
   this.validatorShare = deployer.validatorShare
   this.slashingManager = contracts.slashingManager
+  this.validatorPermission = contracts.validatorPermission
 
   await this.stakeManager.updateCheckpointReward(web3.utils.toWei('10000'))
   await this.stakeManager.updateCheckPointBlockInterval(1)
@@ -79,6 +80,9 @@ export async function approveAndStake({ wallet, stakeAmount, approveAmount, acce
   await this.stakeToken.approve(this.stakeManager.address, new BN(mintAmount), {
     from: wallet.getAddressString()
   })
+
+  //whitelisting wallet
+  await this.validatorPermission.updateValidatorsPermission(wallet.getAddressString(), "true")
 
   await this.stakeManager.stakeFor(wallet.getAddressString(), stakeAmount, fee, acceptDelegation, signer || wallet.getPublicKeyString(), {
     from: wallet.getAddressString()

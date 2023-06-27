@@ -1,6 +1,6 @@
 import deployer from '../../helpers/deployer.js'
 import logDecoder from '../../helpers/log-decoder.js'
-import { ValidatorShare, StakingInfo, StakeManager } from '../../helpers/artifacts'
+import { ValidatorShare, StakingInfo, StakeManager, ValidatorPermission } from '../../helpers/artifacts'
 
 import {
   checkPoint,
@@ -17,6 +17,7 @@ contract('Slashing:validator', async function(accounts) {
   let stakeToken
   let stakeManager
   let slashingManager
+  let validatorPermission
   const wallets = generateFirstWallets(mnemonics, 10)
   const DYNASTY = 8
 
@@ -28,6 +29,7 @@ contract('Slashing:validator', async function(accounts) {
       stakeToken = contracts.stakeToken
       stakeManager = contracts.stakeManager
       slashingManager = contracts.slashingManager
+      validatorPermission = contracts.validatorPermission
 
       await stakeManager.updateDynastyValue(DYNASTY)
       await stakeManager.updateCheckPointBlockInterval(1)
@@ -42,6 +44,10 @@ contract('Slashing:validator', async function(accounts) {
         await stakeToken.approve(stakeManager.address, amount, {
           from: wallets[i].getAddressString()
         })
+
+        //whitelisting user
+        await validatorPermission.updateValidatorsPermission(wallets[i], "true")
+
         await stakeManager.stakeFor(wallets[i].getAddressString(), stakeAmount, heimdallFee, false, wallets[i].getPublicKeyString(), {
           from: wallets[i].getAddressString()
         })
@@ -187,6 +193,7 @@ contract('Slashing:delegation', async function(accounts) {
       stakeToken = contracts.stakeToken
       stakeManager = contracts.stakeManager
       slashingManager = contracts.slashingManager
+      validatorPermission = contracts.validatorPermission
 
       stakeManager.updateDynastyValue(8)
       stakeManager.updateCheckPointBlockInterval(1)
@@ -200,6 +207,10 @@ contract('Slashing:delegation', async function(accounts) {
         await stakeToken.approve(stakeManager.address, amount, {
           from: wallets[i].getAddressString()
         })
+
+        //whitelisting validator
+        await validatorPermission.updateValidatorsPermission(wallets[i], "true")
+
         await stakeManager.stakeFor(wallets[i].getAddressString(), stakeAmount, heimdallFee, true, wallets[i].getPublicKeyString(), {
           from: wallets[i].getAddressString()
         })
