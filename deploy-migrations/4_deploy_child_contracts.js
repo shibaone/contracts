@@ -15,10 +15,10 @@ module.exports = async function(deployer, network, accounts) {
     const childChain = await ChildChain.deployed()
     const contractAddresses = utils.getContractAddresses()
 
-    let MaticWeth = await childChain.addToken(
+    let ShibWeth = await childChain.addToken(
       accounts[0],
-      contractAddresses.root.tokens.MaticWeth,
-      'ETH on Matic',
+      contractAddresses.root.tokens.ShibWeth,
+      'ETH on Shib',
       'ETH',
       18,
       false // _isERC721
@@ -53,7 +53,7 @@ module.exports = async function(deployer, network, accounts) {
     contractAddresses.child = {
       ChildChain: ChildChain.address,
       tokens: {
-        MaticWeth: MaticWeth.logs.find(log => log.event === 'NewToken').args.token,
+        ShibWeth: ShibWeth.logs.find(log => log.event === 'NewToken').args.token,
         BoneToken: '0x0000000000000000000000000000000000001010',
         TestToken: TestToken.logs.find(log => log.event === 'NewToken').args.token,
         RootERC721: RootERC721.logs.find(log => log.event === 'NewToken').args.token

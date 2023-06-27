@@ -56,6 +56,7 @@ contract DepositManager is DepositManagerStorage, IDepositManager, ERC721Holder 
         } else {
             require(IERC20(_token).transfer(_user, _amountOrNFTId), "TRANSFER_FAILED");
         }
+        emit AssetTransfer(_token, _user, _amountOrNFTId);
     }
 
     function depositERC20(address _token, uint256 _amount) external {

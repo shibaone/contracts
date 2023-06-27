@@ -9,8 +9,8 @@ for (let i = 0; i < Object.keys(status).length; i++) {
     res.root['tokens']['TestToken'] = status[i].address
   } else if (status[i].contract === 'BoneToken') {
     res.root['tokens']['BoneToken'] = status[i].address
-  } else if (status[i].contract === 'MaticWETH') {
-    res.root['tokens']['MaticWeth'] = status[i].address
+  } else if (status[i].contract === 'ShibWETH') {
+    res.root['tokens']['ShibWeth'] = status[i].address
   } else if (status[i].contract === 'RootERC721') {
     res.root['tokens'][status[i].contract] = status[i].address
   } else {

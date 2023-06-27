@@ -16,8 +16,8 @@ module.exports = async function(deployer, network, accounts) {
     tasks.push(governance.update(
       contractAddresses.root.Registry,
       registry.contract.methods.mapToken(
-        contractAddresses.root.tokens.MaticWeth,
-        contractAddresses.child.tokens.MaticWeth,
+        contractAddresses.root.tokens.ShibWeth,
+        contractAddresses.child.tokens.ShibWeth,
         false /* isERC721 */
       ).encodeABI()
     ))

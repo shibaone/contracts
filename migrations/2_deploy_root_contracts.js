@@ -49,7 +49,7 @@ const StakeManagerTest = artifacts.require('StakeManagerTest')
 const ValidatorPermission = artifacts.require('ValidatorPermission')
 
 const ExitNFT = artifacts.require('ExitNFT')
-const MaticWeth = artifacts.require('MaticWETH')
+const ShibWeth = artifacts.require('ShibWETH')
 const TestToken = artifacts.require('TestToken')
 const BoneToken = artifacts.require('BoneToken')
 const RootERC721 = artifacts.require('RootERC721')
@@ -243,7 +243,7 @@ module.exports = async function(deployer, network, accounts) {
     let stakingNFT = await StakingNFT.deployed()
     await stakingNFT.transferOwnership(StakeManagerProxy.address)
 
-    await deployer.deploy(MaticWeth)
+    await deployer.deploy(ShibWeth)
 
     await Promise.all([
       deployer.deploy(
@@ -303,7 +303,7 @@ module.exports = async function(deployer, network, accounts) {
         },
         tokens: {
           BoneToken: BoneToken.address,
-          MaticWeth: MaticWeth.address,
+          ShibWeth: ShibWeth.address,
           TestToken: TestToken.address,
           RootERC721: RootERC721.address
         }

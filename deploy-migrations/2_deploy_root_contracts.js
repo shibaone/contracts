@@ -42,7 +42,7 @@ const ExitNFT = artifacts.require('ExitNFT')
 const ValidatorPermission = artifacts.require('ValidatorPermission')
 
 // tokens
-const MaticWeth = artifacts.require('MaticWETH')
+const ShibWeth = artifacts.require('ShibWETH')
 const TestToken = artifacts.require('TestToken')
 const BoneToken = artifacts.require('BoneToken')
 const RootERC721 = artifacts.require('RootERC721')
@@ -154,7 +154,7 @@ module.exports = async function(deployer) {
     await deployer.deploy(ValidatorPermission)
 
     console.log('deploying tokens...')
-    await deployer.deploy(MaticWeth)
+    await deployer.deploy(ShibWeth)
     await deployer.deploy(BoneToken, 'BONE', 'BONE')
     const testToken = await TestToken.new('Test ERC20', 'TST20')
     await deployer.deploy(RootERC721, 'Test ERC721', 'TST721')
@@ -238,7 +238,7 @@ module.exports = async function(deployer) {
           TransferWithSigPredicate: TransferWithSigPredicate.address
         },
         tokens: {
-          MaticWeth: MaticWeth.address,
+          ShibWeth: ShibWeth.address,
           BoneToken: TestToken.address,
           TestToken: testToken.address,
           RootERC721: RootERC721.address
