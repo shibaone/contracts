@@ -247,16 +247,16 @@ class Deployer {
     return this.rootChain
   }
 
-  async deployMaticWeth() {
-    const maticWeth = await contracts.MaticWETH.new()
+  async deployShibWeth() {
+    const ShibWeth = await contracts.ShibWETH.new()
     await Promise.all([
-      this.mapToken(maticWeth.address, maticWeth.address, false /* isERC721 */),
+      this.mapToken(ShibWeth.address, ShibWeth.address, false /* isERC721 */),
       this.updateContractMap(
         ethUtils.keccak256('wethToken'),
-        maticWeth.address
+        ShibWeth.address
       )
     ])
-    return maticWeth
+    return ShibWeth
   }
 
   async deployGovernance() {

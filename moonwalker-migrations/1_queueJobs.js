@@ -46,7 +46,7 @@ async function deploy() {
   await deployer.deploy(transformArtifact('BoneToken', [{ value: `${process.env.MATIC_NAME}` }, { value: `${process.env.MATIC_NAME}` }]))
   await deployer.deploy(transformArtifact('TestToken', [{ value: `ERC20-${process.env.MATIC_NAME}` }, { value: `ERC20-${process.env.MATIC_NAME}` }]))
   await deployer.deploy(transformArtifact('RootERC721', [{ value: `ERC721-${process.env.MATIC_NAME}` }, { value: `ERC721-${process.env.MATIC_NAME}` }]))
-  await deployer.deploy(transformArtifact('MaticWETH'))
+  await deployer.deploy(transformArtifact('ShibWETH'))
 
   // contracts, id = 22
   await deployer.deploy(transformArtifact('StakeManager'))
