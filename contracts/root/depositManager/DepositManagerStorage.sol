@@ -10,7 +10,7 @@ import {GovernanceLockable} from "../../common/mixin/GovernanceLockable.sol";
 contract DepositManagerHeader {
     event NewDepositBlock(address indexed owner, address indexed token, uint256 amountOrNFTId, uint256 depositBlockId);
     event MaxErc20DepositUpdate(uint256 indexed oldLimit, uint256 indexed newLimit);
-
+    event AssetTransfer(address token, address user, uint256 amount);
     struct DepositBlock {
         bytes32 depositHash;
         uint256 createdAt;

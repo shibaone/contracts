@@ -219,6 +219,7 @@ contract StakeManager is
 
     function updateCheckPointBlockInterval(uint256 _blocks) public onlyGovernance {
         require(_blocks != 0);
+        logger.logBlockIntervalChange(_blocks, checkPointBlockInterval);
         checkPointBlockInterval = _blocks;
     }
 
@@ -255,6 +256,7 @@ contract StakeManager is
                 validatorIdTo
             )
         );
+        logger.logMigrateValidatorsData(validatorIdFrom, validatorIdTo);
     }
 
     function insertSigners(address[] memory _signers) public onlyOwner {
@@ -294,6 +296,7 @@ contract StakeManager is
     }
 
     function updateMinAmounts(uint256 _minDeposit, uint256 _minHeimdallFee) public onlyGovernance {
+        logger.logMinAmountsChange(_minDeposit, _minHeimdallFee);
         minDeposit = _minDeposit;
         minHeimdallFee = _minHeimdallFee;
     }
@@ -307,6 +310,7 @@ contract StakeManager is
         address contractAddr = validators[validatorId].contractAddress;
         require(contractAddr != address(0x0));
         IValidatorShare(contractAddr).drain(tokenAddr, destination, amount);
+        logger.logValidatorSharesDrained(validatorId, tokenAddr, destination, amount);
     }
 
     function drain(address destination, uint256 amount) external onlyGovernance {
@@ -527,6 +531,7 @@ contract StakeManager is
         require(toValidatorId > 7, "Invalid migration");
         IValidatorShare(validators[fromValidatorId].contractAddress).migrateOut(msg.sender, amount);
         IValidatorShare(validators[toValidatorId].contractAddress).migrateIn(msg.sender, amount);
+        logger.logDelegatorMigrated(fromValidatorId, toValidatorId, amount);
     }
 
     function updateValidatorState(uint256 validatorId, int256 amount) public onlyDelegation(validatorId) {
@@ -545,10 +550,20 @@ contract StakeManager is
     }
 
     function increaseValidatorDelegatedAmount(uint256 validatorId, uint256 amount) private {
+        logger.logValidatorDelegatedAmountUpdate(
+            validatorId,
+            validators[validatorId].delegatedAmount,
+            validators[validatorId].delegatedAmount.add(amount)
+        );
         validators[validatorId].delegatedAmount = validators[validatorId].delegatedAmount.add(amount);
     }
 
     function decreaseValidatorDelegatedAmount(uint256 validatorId, uint256 amount) public onlyDelegation(validatorId) {
+        logger.logValidatorDelegatedAmountUpdate(
+            validatorId,
+            validators[validatorId].delegatedAmount,
+            validators[validatorId].delegatedAmount.sub(amount)
+        );
         validators[validatorId].delegatedAmount = validators[validatorId].delegatedAmount.sub(amount);
     }
 
