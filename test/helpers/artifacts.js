@@ -17,6 +17,7 @@ export const StakingNFT = artifacts.require('StakingNFT')
 export const ValidatorShareProxy = artifacts.require('ValidatorShareProxy')
 export const ValidatorShare = artifacts.require('ValidatorShareTest')
 export const IValidatorShare = artifacts.require('IValidatorShare')
+export const ValidatorPermission = artifacts.require('ValidatorPermission')
 
 export const StakeManagerTestable = artifacts.require('StakeManagerTestable')
 export const ValidatorShareFactory = artifacts.require('ValidatorShareFactory')
@@ -43,7 +44,7 @@ export const TransferWithSigPredicate = artifacts.require(
 )
 
 // tokens
-export const MaticWETH = artifacts.require('MaticWETH')
+export const ShibWETH = artifacts.require('ShibWETH')
 export const TestToken = artifacts.require('TestToken')
 export const RootERC721 = artifacts.require('RootERC721')
 export const ERC721PlasmaMintable = artifacts.require('ERC721PlasmaMintable')

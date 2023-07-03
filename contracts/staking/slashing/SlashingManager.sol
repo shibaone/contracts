@@ -117,11 +117,13 @@ contract SlashingManager is ISlashingManager, Ownable {
 
     function updateReportRate(uint256 newReportRate) public onlyOwner {
         require(newReportRate > 0);
+        logger.logUpdateReportRate(newReportRate, reportRate);
         reportRate = newReportRate;
     }
 
     function updateProposerRate(uint256 newProposerRate) public onlyOwner {
         require(newProposerRate > 0);
+        logger.logUpdateProposerRate(newProposerRate, proposerRate);
         proposerRate = newProposerRate;
     }
 

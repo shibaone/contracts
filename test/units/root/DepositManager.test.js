@@ -101,8 +101,8 @@ contract('DepositManager', async function(accounts) {
     describe('depositEther', async function() {
       before(freshDeploy)
       before(async function() {
-        this.maticWeth = await deployer.deployMaticWeth()
-        this.tokenAddr = this.maticWeth.address
+        this.ShibWeth = await deployer.deployShibWeth()
+        this.tokenAddr = this.ShibWeth.address
         this.depositPayload = web3.utils.toWei('1', 'ether')
         this.user = accounts[0]
       })
@@ -347,7 +347,7 @@ contract('DepositManager', async function(accounts) {
       const value = web3.utils.toWei('1', 'ether')
 
       beforeEach(async function() {
-        await deployer.deployMaticWeth()
+        await deployer.deployShibWeth()
         await this.contracts.governance.update(
           this.depositManager.address,
           this.depositManager.contract.methods.lock().encodeABI()

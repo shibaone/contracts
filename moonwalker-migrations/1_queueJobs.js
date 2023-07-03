@@ -79,6 +79,8 @@ async function deploy() {
   await deployer.deploy(transformArtifact('TransferWithSigPredicate', ['RootChain', 'WithdrawManagerProxy', 'Registry']))
 
   // contracts, id = 41
+
+  await deployer.deploy(transformArtifact('ValidatorPermission'))
 }
 
 function transformArtifact(contract, args = []) {

@@ -43,6 +43,7 @@ class Deployer {
     this.slashingManager = await contracts.SlashingManager.new(this.registry.address, this.stakingInfo.address, 'heimdall-P5rXwg')
     this.rootChain = await this.deployRootChain()
     this.stakingNFT = await contracts.StakingNFT.new('Matic Validator', 'MV')
+    this.validatorPermission = await contracts.ValidatorPermission.new()
 
     let proxy = await contracts.StakeManagerProxy.new(
       utils.ZeroAddress
@@ -58,7 +59,8 @@ class Deployer {
       this.validatorShareFactory.address,
       this.governance.address,
       owner,
-      auctionImpl.address
+      auctionImpl.address,
+      this.validatorPermission.address
     ).encodeABI())
 
     this.stakeManager = await contracts.StakeManager.at(proxy.address)
@@ -87,7 +89,8 @@ class Deployer {
       withdrawManager,
       exitNFT: this.exitNFT,
       stakeManager: this.stakeManager,
-      governance: this.governance
+      governance: this.governance,
+      validatorPermission: this.validatorPermission
     }
 
     _contracts.testToken = await this.deployTestErc20()
@@ -184,6 +187,7 @@ class Deployer {
     this.stakingInfo = await contracts.StakingInfo.new(this.registry.address)
     this.stakeToken = await contracts.TestToken.new('Stake Token', 'STAKE')
     this.stakingNFT = await contracts.StakingNFT.new('Matic Validator', 'MV')
+    this.validatorPermission = await contracts.ValidatorPermission.new()
 
     let stakeManager = await contracts.StakeManagerTestable.new()
     const rootChainOwner = wallets[1]
@@ -200,7 +204,8 @@ class Deployer {
       this.validatorShareFactory.address,
       this.governance.address,
       wallets[0].getAddressString(),
-      auctionImpl.address
+      auctionImpl.address,
+      this.validatorPermission.address
     ).encodeABI())
 
     this.stakeManager = await contracts.StakeManagerTestable.at(proxy.address)
@@ -231,7 +236,8 @@ class Deployer {
       governance: this.governance,
       stakingNFT: this.stakingNFT,
       stakeManagerProxy: proxy,
-      stakeManagerImpl: stakeManager
+      stakeManagerImpl: stakeManager,
+      validatorPermission: this.validatorPermission
     }
     return _contracts
   }
@@ -247,16 +253,16 @@ class Deployer {
     return this.rootChain
   }
 
-  async deployMaticWeth() {
-    const maticWeth = await contracts.MaticWETH.new()
+  async deployShibWeth() {
+    const ShibWeth = await contracts.ShibWETH.new()
     await Promise.all([
-      this.mapToken(maticWeth.address, maticWeth.address, false /* isERC721 */),
+      this.mapToken(ShibWeth.address, ShibWeth.address, false /* isERC721 */),
       this.updateContractMap(
         ethUtils.keccak256('wethToken'),
-        maticWeth.address
+        ShibWeth.address
       )
     ])
-    return maticWeth
+    return ShibWeth
   }
 
   async deployGovernance() {

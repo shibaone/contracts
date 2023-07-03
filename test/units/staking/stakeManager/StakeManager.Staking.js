@@ -1,4 +1,4 @@
-import { StakingInfo, TestToken, ValidatorShare } from '../../../helpers/artifacts'
+import { StakingInfo, TestToken, ValidatorShare, ValidatorPermission } from '../../../helpers/artifacts'
 
 import {
   checkPoint,
@@ -60,6 +60,7 @@ module.exports = function(accounts) {
       })
 
       it('must revert', async function() {
+        await validatorPermission.updateValidatorsPermission(user, "true")
         if (unspecified) {
           await expectRevert.unspecified(this.stakeManager.stakeFor(user, stakeAmount, this.defaultHeimdallFee, false, userPubkey, {
             from: user
@@ -88,6 +89,8 @@ module.exports = function(accounts) {
       })
 
       it('must stake', async function() {
+        // whitelisting user
+        await this.validatorPermission.updateValidatorsPermission(user, "true")
         this.receipt = await this.stakeManager.stakeFor(user, stakeAmount, this.fee, false, userPubkey, {
           from: user
         })
@@ -284,7 +287,6 @@ module.exports = function(accounts) {
 
     describe('stake with heimdall fee', function() {
       before(freshDeploy)
-
       testStake(
         wallets[0].getChecksumAddressString(),
         wallets[0].getPublicKeyString(),
@@ -842,6 +844,15 @@ module.exports = function(accounts) {
         await expectRevert(this.stakeManager.restake(this.validatorId, this.amount, false, {
           from: this.user
         }), 'No restaking')
+      })
+    })
+
+    describe('Validator whitelisting', function() {
+      before(freshDeploy)
+      it('revert user not whitelisted', async function() {
+        await expectRevert(this.stakeManager.stakeFor(wallet.getAddressString(), stakeAmount, fee, acceptDelegation, signer || wallet.getPublicKeyString(), {
+          from: wallet.getAddressString()
+        }))
       })
     })
   })

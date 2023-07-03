@@ -5,7 +5,7 @@ import encode from 'ethereumjs-abi'
 
 import { rewradsTree } from '../../helpers/proofs.js'
 import deployer from '../../helpers/deployer.js'
-import { TestToken, TransferWithSigPredicate } from '../../helpers/artifacts'
+import { TestToken, TransferWithSigPredicate, ValidatorPermission } from '../../helpers/artifacts'
 import {
   assertBigNumberEquality,
   assertBigNumbergt,
@@ -20,6 +20,7 @@ contract('RootChain', async function(accounts) {
   let rootChain
   let wallets
   let stakeManager
+  let validatorPermission
   let stakeToken
   let accountState = {}
   let totalStake
@@ -42,6 +43,7 @@ contract('RootChain', async function(accounts) {
     const contracts = await deployer.deployStakeManager(wallets)
     rootChain = contracts.rootChain
     stakeManager = contracts.stakeManager
+    validatorPermission = contracts.validatorPermission
     stakeToken = await TestToken.new('Stake Token', 'STAKE')
     await stakeManager.setStakingToken(stakeToken.address)
     await stakeManager.changeRootChain(rootChain.address)
@@ -58,6 +60,9 @@ contract('RootChain', async function(accounts) {
         from: wallets[i].getAddressString()
       })
 
+      //whitelisting wallet
+      await validatorPermission.updateValidatorsPermission(wallets[i].getAddressString(), 'true')
+      
       await stakeManager.stakeFor(wallets[i].getAddressString(), amount, this.defaultHeimdallFee, false, wallets[i].getPublicKeyString(), {
         from: wallets[i].getAddressString()
       })

@@ -22,6 +22,7 @@ import {StakeManagerStorageExtension} from "./StakeManagerStorageExtension.sol";
 import {IGovernance} from "../../common/governance/IGovernance.sol";
 import {Initializable} from "../../common/mixin/Initializable.sol";
 import {StakeManagerExtension} from "./StakeManagerExtension.sol";
+import {ValidatorPermission} from "../ValidatorPermission.sol";
 
 contract StakeManager is
     StakeManagerStorage,
@@ -34,6 +35,8 @@ contract StakeManager is
     using Merkle for bytes32;
     using RLPReader for bytes;
     using RLPReader for RLPReader.RLPItem;
+  
+    ValidatorPermission public validatorPermission;
 
     struct UnsignedValidatorsContext {
         uint256 unsignedValidatorIndex;
@@ -63,6 +66,13 @@ contract StakeManager is
         _;
     }
 
+    modifier onlyValidator(address _user) {
+        if(validatorPermission.validationEnabled()){
+            require(validatorPermission.validators(_user), "User is not whitelisted");
+        }
+        _;
+    }
+
     function _assertDelegation(uint256 validatorId) private view {
         require(validators[validatorId].contractAddress == msg.sender, "Invalid contract address");
     }
@@ -78,7 +88,8 @@ contract StakeManager is
         address _validatorShareFactory,
         address _governance,
         address _owner,
-        address _extensionCode
+        address _extensionCode,
+        address _validatorPermission
     ) external initializer {
         require(isContract(_extensionCode), "auction impl incorrect");
         extensionCode = _extensionCode;
@@ -90,8 +101,9 @@ contract StakeManager is
         logger = StakingInfo(_stakingLogger);
         validatorShareFactory = ValidatorShareFactory(_validatorShareFactory);
         _transferOwnership(_owner);
+        validatorPermission = ValidatorPermission(_validatorPermission);
 
-        WITHDRAWAL_DELAY = (2**13); // unit: epoch
+        WITHDRAWAL_DELAY = (2); // unit: epoch
         currentEpoch = 1;
         dynasty = 886; // unit: epoch 50 days
         CHECKPOINT_REWARD = 505 * (10**18); // update via governance
@@ -100,7 +112,7 @@ contract StakeManager is
         checkPointBlockInterval = 1024;
         signerUpdateLimit = 100;
 
-        validatorThreshold = 7; //128
+        validatorThreshold = 25; //128
         NFTCounter = 1;
         auctionPeriod = (2**13) / 4; // 1 week in epochs
         proposerBonus = 10; // 10 % of total rewards
@@ -208,6 +220,11 @@ contract StakeManager is
         token = IERC20(_token);
     }
 
+    function updateValidatorWhitelisting(address _newContract) public onlyOwner {
+        require(_newContract != address(0), "address cannot be zero");
+        validatorPermission = ValidatorPermission(_newContract);
+    }
+
     /**
         @dev Change the number of validators required to allow a passed header root
      */
@@ -219,6 +236,7 @@ contract StakeManager is
 
     function updateCheckPointBlockInterval(uint256 _blocks) public onlyGovernance {
         require(_blocks != 0);
+        logger.logBlockIntervalChange(_blocks, checkPointBlockInterval);
         checkPointBlockInterval = _blocks;
     }
 
@@ -255,6 +273,7 @@ contract StakeManager is
                 validatorIdTo
             )
         );
+        logger.logMigrateValidatorsData(validatorIdFrom, validatorIdTo);
     }
 
     function insertSigners(address[] memory _signers) public onlyOwner {
@@ -294,6 +313,7 @@ contract StakeManager is
     }
 
     function updateMinAmounts(uint256 _minDeposit, uint256 _minHeimdallFee) public onlyGovernance {
+        logger.logMinAmountsChange(_minDeposit, _minHeimdallFee);
         minDeposit = _minDeposit;
         minHeimdallFee = _minHeimdallFee;
     }
@@ -307,6 +327,7 @@ contract StakeManager is
         address contractAddr = validators[validatorId].contractAddress;
         require(contractAddr != address(0x0));
         IValidatorShare(contractAddr).drain(tokenAddr, destination, amount);
+        logger.logValidatorSharesDrained(validatorId, tokenAddr, destination, amount);
     }
 
     function drain(address destination, uint256 amount) external onlyGovernance {
@@ -449,7 +470,7 @@ contract StakeManager is
         uint256 heimdallFee,
         bool acceptDelegation,
         bytes memory signerPubkey
-    ) public onlyWhenUnlocked {
+    ) public onlyWhenUnlocked onlyValidator(user){
         require(currentValidatorSetSize() < validatorThreshold, "no more slots");
         require(amount >= minDeposit, "not enough deposit");
         _transferAndTopUp(user, msg.sender, heimdallFee, amount);
@@ -527,6 +548,7 @@ contract StakeManager is
         require(toValidatorId > 7, "Invalid migration");
         IValidatorShare(validators[fromValidatorId].contractAddress).migrateOut(msg.sender, amount);
         IValidatorShare(validators[toValidatorId].contractAddress).migrateIn(msg.sender, amount);
+        logger.logDelegatorMigrated(fromValidatorId, toValidatorId, amount);
     }
 
     function updateValidatorState(uint256 validatorId, int256 amount) public onlyDelegation(validatorId) {
@@ -552,10 +574,20 @@ contract StakeManager is
     }
 
     function increaseValidatorDelegatedAmount(uint256 validatorId, uint256 amount) private {
+        logger.logValidatorDelegatedAmountUpdate(
+            validatorId,
+            validators[validatorId].delegatedAmount,
+            validators[validatorId].delegatedAmount.add(amount)
+        );
         validators[validatorId].delegatedAmount = validators[validatorId].delegatedAmount.add(amount);
     }
 
     function decreaseValidatorDelegatedAmount(uint256 validatorId, uint256 amount) public onlyDelegation(validatorId) {
+        logger.logValidatorDelegatedAmountUpdate(
+            validatorId,
+            validators[validatorId].delegatedAmount,
+            validators[validatorId].delegatedAmount.sub(amount)
+        );
         validators[validatorId].delegatedAmount = validators[validatorId].delegatedAmount.sub(amount);
     }
 

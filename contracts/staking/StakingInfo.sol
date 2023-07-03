@@ -104,13 +104,14 @@ contract StakingInfo is Ownable {
         address indexed signer
     );
     event UnJailed(uint256 indexed validatorId, address indexed signer);
-    event Slashed(uint256 indexed nonce, uint256 indexed amount);
     event ThresholdChange(uint256 newThreshold, uint256 oldThreshold);
+    event CheckPointBlockIntervalChange(uint256 newInterval, uint256 oldInterval);
     event DynastyValueChange(uint256 newDynasty, uint256 oldDynasty);
     event ProposerBonusChange(
         uint256 newProposerBonus,
         uint256 oldProposerBonus
     );
+    event MinAmountsChange(uint256 newMinDeposit, uint256 newHeimdallFee);
 
     event RewardUpdate(uint256 newReward, uint256 oldReward);
 
@@ -140,6 +141,9 @@ contract StakingInfo is Ownable {
     );
     event TopUpFee(address indexed user, uint256 indexed fee);
     event ClaimFee(address indexed user, uint256 indexed fee);
+    event drainValidatorShares(uint256 validatorId, address tokenAddr, address destination, uint256 amount);
+    event ValidatorsDataMigrated(uint256 validatorIdFrom, uint256 validatorIdTo);
+    event ValidatorDelegatedAmountUpdate(uint256 validatorId, uint256 oldDelegatedAmount, uint256 newDelegatedAmount);
     // Delegator events
     event ShareMinted(
         uint256 indexed validatorId,
@@ -168,12 +172,22 @@ contract StakingInfo is Ownable {
         address indexed user,
         uint256 amount
     );
+    event DelegatorMigrated(
+        uint256 indexed fromValidator,
+        uint256 indexed toValidator,
+        uint256 amount
+    );
+
     event UpdateCommissionRate(
         uint256 indexed validatorId,
         uint256 indexed newCommissionRate,
         uint256 indexed oldCommissionRate
     );
 
+    // Slashing events
+    event Slashed(uint256 indexed nonce, uint256 indexed amount);
+    event UpdateProposerRate(uint256 newProposerRate, uint256 oldProposerRate);
+    event UpdateReportRate(uint256 newReportRate, uint256 oldReportRate);
     Registry public registry;
 
     modifier onlyValidatorContract(uint256 validatorId) {
@@ -313,11 +327,26 @@ contract StakingInfo is Ownable {
         emit Slashed(nonce, amount);
     }
 
+    function logUpdateProposerRate(uint256 newRate, uint256 oldRate) public onlySlashingManager {
+        emit UpdateProposerRate(newRate, oldRate);
+    }
+
+    function logUpdateReportRate(uint256 newRate, uint256 oldRate) public onlySlashingManager {
+        emit UpdateReportRate(newRate, oldRate);
+    }
+
     function logThresholdChange(uint256 newThreshold, uint256 oldThreshold)
         public
         onlyStakeManager
     {
         emit ThresholdChange(newThreshold, oldThreshold);
+    }
+
+    function logBlockIntervalChange(uint256 newBlockInterval, uint256 oldBlockInterval)
+        public
+        onlyStakeManager
+    {
+        emit CheckPointBlockIntervalChange(newBlockInterval, oldBlockInterval);
     }
 
     function logDynastyValueChange(uint256 newDynasty, uint256 oldDynasty)
@@ -332,6 +361,10 @@ contract StakingInfo is Ownable {
         uint256 oldProposerBonus
     ) public onlyStakeManager {
         emit ProposerBonusChange(newProposerBonus, oldProposerBonus);
+    }
+
+    function logMinAmountsChange(uint256 newMinDeposit, uint256 newHeimdallFee) public onlyStakeManager {
+        emit MinAmountsChange(newMinDeposit, newHeimdallFee);
     }
 
     function logRewardUpdate(uint256 newReward, uint256 oldReward)
@@ -377,12 +410,37 @@ contract StakingInfo is Ownable {
         emit ConfirmAuction(newValidatorId, oldValidatorId, amount);
     }
 
+    function logMigrateValidatorsData(uint256 from, uint256 to) public onlyStakeManager {
+        emit ValidatorsDataMigrated(from, to);
+    }
+
+    function logValidatorDelegatedAmountUpdate(
+        uint256 validatorId,
+        uint256 oldDelegatedAmount,
+        uint256 newDelegatedAmount
+    ) public onlyStakeManager {
+        emit ValidatorDelegatedAmountUpdate(validatorId, oldDelegatedAmount, newDelegatedAmount);
+    }
+
     function logTopUpFee(address user, uint256 fee) public onlyStakeManager {
         emit TopUpFee(user, fee);
     }
 
     function logClaimFee(address user, uint256 fee) public onlyStakeManager {
         emit ClaimFee(user, fee);
+    }
+    
+    function logDelegatorMigrated(uint256 fromValidator, uint256 toValidator, uint256 amount) public onlyStakeManager {
+        emit DelegatorMigrated(fromValidator, toValidator, amount);
+    }
+
+    function logValidatorSharesDrained(
+        uint256 validatorId,
+        address tokenAddr,
+        address destination,
+        uint256 amount
+    ) public onlyStakeManager {
+        emit drainValidatorShares(validatorId, tokenAddr, destination, amount);
     }
 
     function getStakerDetails(uint256 validatorId)

@@ -46,8 +46,10 @@ const TransferWithSigUtils = artifacts.require('TransferWithSigUtils')
 const StakeManagerTestable = artifacts.require('StakeManagerTestable')
 const StakeManagerTest = artifacts.require('StakeManagerTest')
 
+const ValidatorPermission = artifacts.require('ValidatorPermission')
+
 const ExitNFT = artifacts.require('ExitNFT')
-const MaticWeth = artifacts.require('MaticWETH')
+const ShibWeth = artifacts.require('ShibWETH')
 const TestToken = artifacts.require('TestToken')
 const BoneToken = artifacts.require('BoneToken')
 const RootERC721 = artifacts.require('RootERC721')
@@ -183,6 +185,8 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.deploy(StakingInfo, Registry.address)
     await deployer.deploy(StakingNFT, 'Matic Validator', 'MV')
 
+    await deployer.deploy(ValidatorPermission)
+
     await deployer.deploy(RootChain)
     await deployer.deploy(RootChainProxy, RootChain.address, Registry.address, process.env.HEIMDALL_ID)
     await deployer.deploy(StateSender)
@@ -230,7 +234,8 @@ module.exports = async function(deployer, network, accounts) {
         ValidatorShareFactory.address,
         GovernanceProxy.address,
         accounts[0],
-        auctionImpl.address
+        auctionImpl.address,
+        ValidatorPermission.address
       ).encodeABI()
     )
 
@@ -238,7 +243,7 @@ module.exports = async function(deployer, network, accounts) {
     let stakingNFT = await StakingNFT.deployed()
     await stakingNFT.transferOwnership(StakeManagerProxy.address)
 
-    await deployer.deploy(MaticWeth)
+    await deployer.deploy(ShibWeth)
 
     await Promise.all([
       deployer.deploy(
@@ -285,6 +290,7 @@ module.exports = async function(deployer, network, accounts) {
         WithdrawManagerProxy: WithdrawManagerProxy.address,
         StakeManager: StakeManager.address,
         StakeManagerProxy: StakeManagerProxy.address,
+        ValidatorPermission: ValidatorPermission.address,
         SlashingManager: SlashingManager.address,
         StakingInfo: StakingInfo.address,
         ExitNFT: ExitNFT.address,
@@ -297,7 +303,7 @@ module.exports = async function(deployer, network, accounts) {
         },
         tokens: {
           BoneToken: BoneToken.address,
-          MaticWeth: MaticWeth.address,
+          ShibWeth: ShibWeth.address,
           TestToken: TestToken.address,
           RootERC721: RootERC721.address
         }
