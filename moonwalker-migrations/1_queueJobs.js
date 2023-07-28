@@ -43,10 +43,10 @@ async function deploy() {
   await deployer.deploy(transformArtifact('StakingNFT', [{ value: 'Shibarium Validator' }, { value: 'SHV' }]))
 
   // contracts, id = 18
-  await deployer.deploy(transformArtifact('BoneToken', [{ value: `${process.env.MATIC_NAME}` }, { value: `${process.env.MATIC_NAME}` }]))
-  await deployer.deploy(transformArtifact('TestToken', [{ value: `ERC20-${process.env.MATIC_NAME}` }, { value: `ERC20-${process.env.MATIC_NAME}` }]))
-  await deployer.deploy(transformArtifact('RootERC721', [{ value: `ERC721-${process.env.MATIC_NAME}` }, { value: `ERC721-${process.env.MATIC_NAME}` }]))
-  await deployer.deploy(transformArtifact('MaticWETH'))
+  // await deployer.deploy(transformArtifact('BoneToken', [{ value: `${process.env.MATIC_NAME}` }, { value: `${process.env.MATIC_NAME}` }]))
+  // await deployer.deploy(transformArtifact('TestToken', [{ value: `ERC20-${process.env.MATIC_NAME}` }, { value: `ERC20-${process.env.MATIC_NAME}` }]))
+  // await deployer.deploy(transformArtifact('RootERC721', [{ value: `ERC721-${process.env.MATIC_NAME}` }, { value: `ERC721-${process.env.MATIC_NAME}` }]))
+  // await deployer.deploy(transformArtifact('MaticWETH'))
 
   // contracts, id = 22
   await deployer.deploy(transformArtifact('StakeManager'))
@@ -78,7 +78,8 @@ async function deploy() {
 
   await deployer.deploy(transformArtifact('TransferWithSigPredicate', ['RootChain', 'WithdrawManagerProxy', 'Registry']))
 
-  // contracts, id = 41
+  // contracts, id = 37
+  // Add bone contracts
 }
 
 function transformArtifact(contract, args = []) {
