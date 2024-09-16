@@ -9,6 +9,7 @@ import {Merkle} from "../../common/lib/Merkle.sol";
 import {MerklePatriciaProof} from "../../common/lib/MerklePatriciaProof.sol";
 import {PriorityQueue} from "../../common/lib/PriorityQueue.sol";
 import {ExitPayloadReader} from "../../common/lib/ExitPayloadReader.sol";
+import {ExitPayloadReader} from "../../common/lib/ExitPayloadReader.sol";
 
 import {ExitNFT} from "./ExitNFT.sol";
 import {DepositManager} from "../depositManager/DepositManager.sol";
@@ -23,6 +24,12 @@ contract WithdrawManager is WithdrawManagerStorage, IWithdrawManager {
     using RLPReader for bytes;
     using RLPReader for RLPReader.RLPItem;
     using Merkle for bytes32;
+
+    using ExitPayloadReader for bytes;
+    using ExitPayloadReader for ExitPayloadReader.ExitPayload;
+    using ExitPayloadReader for ExitPayloadReader.Receipt;
+    using ExitPayloadReader for ExitPayloadReader.Log;
+    using ExitPayloadReader for ExitPayloadReader.LogTopics;
 
     using ExitPayloadReader for bytes;
     using ExitPayloadReader for ExitPayloadReader.ExitPayload;
@@ -74,6 +81,9 @@ contract WithdrawManager is WithdrawManagerStorage, IWithdrawManager {
         bytes32 txRoot;
         bytes32 receiptRoot;
         bytes branchMaskBytes;
+        bytes32 txRoot;
+        bytes32 receiptRoot;
+        bytes branchMaskBytes;
     }
 
     /**
@@ -105,11 +115,16 @@ contract WithdrawManager is WithdrawManagerStorage, IWithdrawManager {
         )
     {
         ExitPayloadReader.ExitPayload memory payload = data.toExitPayload();
+        ExitPayloadReader.ExitPayload memory payload = data.toExitPayload();
         VerifyInclusionVars memory vars;
 
         vars.headerNumber = payload.getHeaderNumber();
         vars.branchMaskBytes = payload.getBranchMaskAsBytes();
         require(vars.branchMaskBytes[0] == 0, "incorrect mask");
+        vars.txRoot = payload.getTxRoot();
+        vars.receiptRoot = payload.getReceiptRoot();
+        vars.headerNumber = payload.getHeaderNumber();
+        vars.branchMaskBytes = payload.getBranchMaskAsBytes();
         vars.txRoot = payload.getTxRoot();
         vars.receiptRoot = payload.getReceiptRoot();
         require(

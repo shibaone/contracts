@@ -91,16 +91,16 @@ contract StakeManager is
         logger = StakingInfo(_stakingLogger);
         validatorShareFactory = ValidatorShareFactory(_validatorShareFactory);
         _transferOwnership(_owner);
-        WITHDRAWAL_DELAY = (2**13); // unit: epoch
+        WITHDRAWAL_DELAY = (1); // unit: epoch
         currentEpoch = 1;
-        dynasty = 886; // unit: epoch 50 days
+        dynasty = 1; // unit: epoch 50 days
         CHECKPOINT_REWARD = 505 * (10**18); // update via governance
         minDeposit = (10**18); // in ERC20 token
         minHeimdallFee = (10**18); // in ERC20 token
         checkPointBlockInterval = 1024;
         signerUpdateLimit = 100;
 
-        validatorThreshold = 7; //128
+        validatorThreshold = 10; //128
         NFTCounter = 1;
         auctionPeriod = (2**13) / 4; // 1 week in epochs
         proposerBonus = 10; // 10 % of total rewards
