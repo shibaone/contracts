@@ -187,6 +187,13 @@ async function deploy() {
   ],
   'StakeManagerProxy'
 ))
+
+await deployer.deploy(tx('EventsHub', 'initialize', [
+  'Registry'
+],
+'EventsHubProxy'
+))
+
 }
 
 function tx(contract, method, args, addressArtifact) {
