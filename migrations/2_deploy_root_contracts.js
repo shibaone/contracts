@@ -49,7 +49,6 @@ const StakeManagerTest = artifacts.require('StakeManagerTest')
 const ExitNFT = artifacts.require('ExitNFT')
 const MaticWeth = artifacts.require('MaticWETH')
 const TestToken = artifacts.require('TestToken')
-const BoneToken = artifacts.require('BoneToken')
 const RootERC721 = artifacts.require('RootERC721')
 
 const StakeManagerExtension = artifacts.require('StakeManagerExtension')
@@ -167,10 +166,15 @@ module.exports = async function(deployer, network, accounts) {
   }
 
   deployer.then(async() => {
-    await bluebird.map(libDeps, async e => {
+    // await bluebird.map(libDeps, async e => {
+    //     await deployer.deploy(e.lib)
+    //     deployer.link(e.lib, e.contracts)
+    // })
+    // sequential running
+    for (let e of libDeps) {
       await deployer.deploy(e.lib)
       deployer.link(e.lib, e.contracts)
-    })
+    }
 
     await deployer.deploy(Governance)
     await deployer.deploy(GovernanceProxy, Governance.address)
@@ -240,38 +244,36 @@ module.exports = async function(deployer, network, accounts) {
 
     await deployer.deploy(MaticWeth)
 
-    await Promise.all([
-      deployer.deploy(
-        ERC20Predicate,
-        WithdrawManagerProxy.address,
-        DepositManagerProxy.address,
-        Registry.address
-      ),
-      deployer.deploy(
-        ERC721Predicate,
-        WithdrawManagerProxy.address,
-        DepositManagerProxy.address
-      ),
-      deployer.deploy(
-        MintableERC721Predicate,
-        WithdrawManagerProxy.address,
-        DepositManagerProxy.address
-      ),
-      deployer.deploy(Marketplace),
-      deployer.deploy(MarketplacePredicateTest),
-      deployer.deploy(
-        MarketplacePredicate,
-        RootChain.address,
-        WithdrawManagerProxy.address,
-        Registry.address
-      ),
-      deployer.deploy(
-        TransferWithSigPredicate,
-        RootChain.address,
-        WithdrawManagerProxy.address,
-        Registry.address
-      )
-    ])
+    await deployer.deploy(
+      ERC20Predicate,
+      WithdrawManagerProxy.address,
+      DepositManagerProxy.address,
+      Registry.address
+    )
+    await deployer.deploy(
+      ERC721Predicate,
+      WithdrawManagerProxy.address,
+      DepositManagerProxy.address
+    )
+    await deployer.deploy(
+      MintableERC721Predicate,
+      WithdrawManagerProxy.address,
+      DepositManagerProxy.address
+    )
+    await deployer.deploy(Marketplace);
+    await deployer.deploy(MarketplacePredicateTest);
+    await deployer.deploy(
+      MarketplacePredicate,
+      RootChain.address,
+      WithdrawManagerProxy.address,
+      Registry.address
+    );
+    await deployer.deploy(
+      TransferWithSigPredicate,
+      RootChain.address,
+      WithdrawManagerProxy.address,
+      Registry.address
+    )
 
     const contractAddresses = {
       root: {
@@ -296,7 +298,7 @@ module.exports = async function(deployer, network, accounts) {
           TransferWithSigPredicate: TransferWithSigPredicate.address
         },
         tokens: {
-          BoneToken: BoneToken.address,
+          BoneToken: boneToken.address,
           MaticWeth: MaticWeth.address,
           TestToken: TestToken.address,
           RootERC721: RootERC721.address
