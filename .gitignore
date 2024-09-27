@@ -19,6 +19,8 @@ test-blockchain/data
 .DS_Store
 *.env
 
+.vscode
+
 coverage/
 
 coverage.json

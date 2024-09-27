@@ -64,7 +64,8 @@
     "solidity-coverage": "^0.7.4",
     "solium": "^1.1.8",
     "truffle-contract-size": "^1.0.1",
-    "web3": "^1.0.0-beta.51"
+    "web3": "^1.8.0",
+    "web3-eth-abi": "^1.8.0"
   },
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.9",
@@ -80,6 +81,7 @@
     "ethereumjs-util": "6.0.0",
     "ethereumjs-wallet": "^0.6.5",
     "ganache": "^7.5.0",
+    "dotenv": "^16.0.0",
     "glob": "^7.1.6",
     "merkle-patricia-tree": "2.3.2",
     "nunjucks": "^3.2.0",
